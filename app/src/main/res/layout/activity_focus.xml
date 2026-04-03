@@ -1,108 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#0D0D1A"
-    android:gravity="center"
-    android:padding="24dp">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="🎯 Focus Mode"
-        android:textColor="#FFFFFF"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="8dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Stay focused for 25 minutes"
-        android:textColor="#9E9EC8"
-        android:textSize="13sp"
-        android:gravity="center"
-        android:paddingBottom="32dp"/>
-
-    <!-- Timer Display -->
-    <TextView
-        android:id="@+id/tvTimer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="25:00"
-        android:textColor="#FFFFFF"
-        android:textSize="80sp"
-        android:textStyle="bold"
-        android:fontFamily="monospace"
-        android:gravity="center"
-        android:paddingBottom="16dp"/>
-
-    <!-- Status -->
-    <TextView
-        android:id="@+id/tvStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🟢 Focused"
-        android:textColor="#00FF88"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:paddingBottom="8dp"/>
-
-    <!-- Violations -->
-    <TextView
-        android:id="@+id/tvViolations"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Violations: 0 / 3"
-        android:textColor="#00FF88"
-        android:textSize="16sp"
-        android:paddingBottom="40dp"/>
-
-    <!-- Start/Stop Button -->
-    <Button
-        android:id="@+id/btnStartStop"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="▶ START"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#059669"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:layout_marginBottom="12dp"/>
-
-    <!-- Violation Button -->
-    <Button
-        android:id="@+id/btnViolation"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="⚠️ TAP WHEN YOU BREAK FOCUS"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#DC2626"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp"/>
-
-    <!-- Finish Button -->
-    <Button
-        android:id="@+id/btnFinish"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="✅ FINISH SESSION"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#1D4ED8"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp"/>
-
-    <!-- Back Button -->
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="← BACK"
-        android:textColor="#9E9EC8"
-        android:backgroundTint="#1A1A2E"
-        android:textStyle="bold"/>
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="#0D0D1A" android:gravity="center" android:padding="24dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🎯 Focus Mode" android:textColor="#FFFFFF" android:textSize="26sp" android:textStyle="bold" android:gravity="center" android:paddingBottom="8dp"/>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Stay focused for 25 minutes" android:textColor="#9E9EC8" android:textSize="13sp" android:gravity="center" android:paddingBottom="32dp"/>
+    <!--  Timer Display  -->
+    <TextView android:id="@+id/tvTimer" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="25:00" android:textColor="#FFFFFF" android:textSize="80sp" android:textStyle="bold" android:fontFamily="monospace" android:gravity="center" android:paddingBottom="16dp"/>
+    <!--  Status  -->
+    <TextView android:id="@+id/tvStatus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🟢 Focused" android:textColor="#00FF88" android:textSize="18sp" android:textStyle="bold" android:paddingBottom="8dp"/>
+    <!--  Violations  -->
+    <TextView android:id="@+id/tvViolations" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Violations: 0 / 3" android:textColor="#00FF88" android:textSize="16sp" android:paddingBottom="40dp"/>
+    <!--  Start/Stop Button  -->
+    <Button android:id="@+id/btnStartStop" android:layout_width="match_parent" android:layout_height="56dp" android:text="▶ START" android:textColor="#FFFFFF" android:backgroundTint="#059669" android:textStyle="bold" android:textSize="16sp" android:layout_marginBottom="12dp"/>
+    <!--  Violation Button  -->
+    <Button android:id="@+id/btnViolation" android:layout_width="match_parent" android:layout_height="56dp" android:text="⚠️ TAP WHEN YOU BREAK FOCUS" android:textColor="#FFFFFF" android:backgroundTint="#DC2626" android:textStyle="bold" android:layout_marginBottom="12dp"/>
+    <!--  Finish Button  -->
+    <Button android:id="@+id/btnFinish" android:layout_width="match_parent" android:layout_height="56dp" android:text="✅ FINISH SESSION" android:textColor="#FFFFFF" android:backgroundTint="#1D4ED8" android:textStyle="bold" android:layout_marginBottom="12dp"/>
+    <!--  Back Button  -->
+    <Button android:id="@+id/btnBack" android:layout_width="match_parent" android:layout_height="48dp" android:text="← BACK" android:textColor="#9E9EC8" android:backgroundTint="#1A1A2E" android:textStyle="bold"/>
 </LinearLayout>

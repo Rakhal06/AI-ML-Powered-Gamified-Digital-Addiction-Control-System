@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="#0D0D1A">
+    <!--  Header  -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp" android:paddingTop="20dp">
+        <Button android:id="@+id/btnBack" android:layout_width="wrap_content" android:layout_height="36dp" android:text="← Back" android:textColor="#FFFFFF" android:backgroundTint="#2A2A3E" android:textSize="12sp"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="🥇 Leaderboard" android:textColor="#FFFFFF" android:textSize="20sp" android:textStyle="bold" android:gravity="center"/>
+        <Button android:id="@+id/btnRefresh" android:layout_width="wrap_content" android:layout_height="36dp" android:text="↺" android:textColor="#FFFFFF" android:backgroundTint="#7C3AED" android:textSize="16sp"/>
+    </LinearLayout>
+    <!--  My Rank Card  -->
+    <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_marginEnd="16dp" android:layout_marginBottom="12dp" app:cardBackgroundColor="#1A1A4E" app:cardCornerRadius="12dp">
+        <TextView android:id="@+id/tvMyRank" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="14dp" android:text="Loading your rank..." android:textColor="#FACC15" android:textSize="14sp" android:gravity="center"/>
+    </androidx.cardview.widget.CardView>
+    <!--  Player count  -->
+    <TextView android:id="@+id/tvPlayerCount" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingStart="16dp" android:paddingEnd="16dp" android:paddingBottom="8dp" android:text="" android:textColor="#9E9EC8" android:textSize="12sp" android:gravity="center"/>
+    <!--  Loading  -->
+    <TextView android:id="@+id/tvLoading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Loading leaderboard..." android:textColor="#9E9EC8" android:textSize="14sp" android:gravity="center" android:padding="20dp"/>
+    <!--  Leaderboard RecyclerView  -->
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerLeaderboard" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:paddingStart="16dp" android:paddingEnd="16dp" android:clipToPadding="false" android:visibility="gone"/>
+</LinearLayout>

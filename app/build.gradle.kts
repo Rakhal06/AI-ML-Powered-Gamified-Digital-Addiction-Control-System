@@ -1,3 +1,6 @@
+// STEP 3 — REPLACE your existing app/build.gradle.kts with this file.
+// Only change: added WorkManager dependency at the bottom.
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -36,7 +39,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true   // viewBinding only — dataBinding not needed
+        viewBinding = true
     }
 }
 
@@ -58,8 +61,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    // Charts (MPAndroidChart)
+    // Charts (MPAndroidChart) — already present
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // ── NEW: WorkManager for scheduled notifications ──────────
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

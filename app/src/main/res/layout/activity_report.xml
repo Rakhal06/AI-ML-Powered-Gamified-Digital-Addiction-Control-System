@@ -1,343 +1,90 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#0D0D1A">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/tvReportTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="📊 Daily Report"
-            android:textColor="#FFFFFF"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"/>
-
-        <!-- Status Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="#1A1A2E"
-            app:cardCornerRadius="12dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="AI Classification"
-                    android:textColor="#9E9EC8"
-                    android:textSize="12sp"/>
-                <TextView
-                    android:id="@+id/tvStatusLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="FOCUSED"
-                    android:textColor="#00FF88"
-                    android:textSize="28sp"
-                    android:textStyle="bold"/>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#0D0D1A">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <TextView android:id="@+id/tvReportTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="📊 Daily Report" android:textColor="#FFFFFF" android:textSize="26sp" android:textStyle="bold" android:gravity="center" android:paddingTop="16dp" android:paddingBottom="16dp"/>
+        <!--  Status Card  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" android:gravity="center">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AI Classification" android:textColor="#9E9EC8" android:textSize="12sp"/>
+                <TextView android:id="@+id/tvStatusLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="FOCUSED" android:textColor="#00FF88" android:textSize="28sp" android:textStyle="bold"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- Score Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="12dp">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                app:cardBackgroundColor="#1A1A2E"
-                app:cardCornerRadius="12dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:gravity="center">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Self Control"
-                        android:textColor="#9E9EC8"
-                        android:textSize="11sp"/>
-                    <TextView
-                        android:id="@+id/tvScoreValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="—"
-                        android:textColor="#00FF88"
-                        android:textSize="28sp"
-                        android:textStyle="bold"/>
+        <!--  Score Row  -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="12dp">
+            <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginEnd="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="12dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Self Control" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    <TextView android:id="@+id/tvScoreValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#00FF88" android:textSize="28sp" android:textStyle="bold"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                app:cardBackgroundColor="#1A1A2E"
-                app:cardCornerRadius="12dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:gravity="center">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Relapse Risk"
-                        android:textColor="#9E9EC8"
-                        android:textSize="11sp"/>
-                    <TextView
-                        android:id="@+id/tvRiskValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="—"
-                        android:textColor="#FF4444"
-                        android:textSize="28sp"
-                        android:textStyle="bold"/>
+            <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="12dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Relapse Risk" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    <TextView android:id="@+id/tvRiskValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#FF4444" android:textSize="28sp" android:textStyle="bold"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
-
-        <!-- Stats Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="#1A1A2E"
-            app:cardCornerRadius="12dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📈 Session Stats"
-                    android:textColor="#A78BFA"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="12dp"/>
-
+        <!--  Stats Card  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📈 Session Stats" android:textColor="#A78BFA" android:textSize="14sp" android:textStyle="bold" android:paddingBottom="12dp"/>
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingBottom="8dp">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="⏱ Time Spent" android:textColor="#9E9EC8" android:textSize="13sp"/>
                     <TextView android:id="@+id/tvTimeValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold"/>
                 </LinearLayout>
-
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingBottom="8dp">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="⚠️ Violations" android:textColor="#9E9EC8" android:textSize="13sp"/>
                     <TextView android:id="@+id/tvViolationsValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold"/>
                 </LinearLayout>
-
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingBottom="8dp">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="👹 Monster Level" android:textColor="#9E9EC8" android:textSize="13sp"/>
                     <TextView android:id="@+id/tvMonsterValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold"/>
                 </LinearLayout>
-
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingBottom="8dp">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="👤 User Type" android:textColor="#9E9EC8" android:textSize="13sp"/>
                     <TextView android:id="@+id/tvClusterValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#A78BFA" android:textSize="13sp" android:textStyle="bold"/>
                 </LinearLayout>
-
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="📅 Weekly Forecast" android:textColor="#9E9EC8" android:textSize="13sp"/>
                     <TextView android:id="@+id/tvWeeklyValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#FACC15" android:textSize="13sp" android:textStyle="bold"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- Violation Apps Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="#2A1A1A"
-            app:cardCornerRadius="12dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📱 Violation Details"
-                    android:textColor="#FF6B6B"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp"/>
-                <TextView
-                    android:id="@+id/tvViolationApps"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#FFAAAA"
-                    android:textSize="13sp"
-                    android:lineSpacingExtra="4dp"/>
+        <!--  Violation Apps Card  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" app:cardBackgroundColor="#2A1A1A" app:cardCornerRadius="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📱 Violation Details" android:textColor="#FF6B6B" android:textSize="14sp" android:textStyle="bold" android:paddingBottom="8dp"/>
+                <TextView android:id="@+id/tvViolationApps" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#FFAAAA" android:textSize="13sp" android:lineSpacingExtra="4dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- AI Insight -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="#1A1A2E"
-            app:cardCornerRadius="12dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🧠 AI Insight"
-                    android:textColor="#A78BFA"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp"/>
-                <TextView
-                    android:id="@+id/tvInsightText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#CCCCCC"
-                    android:textSize="13sp"
-                    android:lineSpacingExtra="4dp"/>
+        <!--  AI Insight  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🧠 AI Insight" android:textColor="#A78BFA" android:textSize="14sp" android:textStyle="bold" android:paddingBottom="8dp"/>
+                <TextView android:id="@+id/tvInsightText" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#CCCCCC" android:textSize="13sp" android:lineSpacingExtra="4dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- Coach Tip -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="#1A1A2E"
-            app:cardCornerRadius="12dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="💡 Coach Tip"
-                    android:textColor="#FACC15"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp"/>
-                <TextView
-                    android:id="@+id/tvTipText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#CCCCCC"
-                    android:textSize="13sp"
-                    android:lineSpacingExtra="4dp"/>
+        <!--  Coach Tip  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💡 Coach Tip" android:textColor="#FACC15" android:textSize="14sp" android:textStyle="bold" android:paddingBottom="8dp"/>
+                <TextView android:id="@+id/tvTipText" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#CCCCCC" android:textSize="13sp" android:lineSpacingExtra="4dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- Remarks -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="#1A1A2E"
-            app:cardCornerRadius="12dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📋 Remarks"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp"/>
-                <TextView
-                    android:id="@+id/tvGoodRemarks"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#00FF88"
-                    android:textSize="13sp"
-                    android:lineSpacingExtra="4dp"
-                    android:paddingBottom="8dp"/>
-                <TextView
-                    android:id="@+id/tvBadRemarks"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#FF4444"
-                    android:textSize="13sp"
-                    android:lineSpacingExtra="4dp"/>
+        <!--  Remarks  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📋 Remarks" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" android:paddingBottom="8dp"/>
+                <TextView android:id="@+id/tvGoodRemarks" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#00FF88" android:textSize="13sp" android:lineSpacingExtra="4dp" android:paddingBottom="8dp"/>
+                <TextView android:id="@+id/tvBadRemarks" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#FF4444" android:textSize="13sp" android:lineSpacingExtra="4dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- 2-Day Timeline -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="#0F1A2E"
-            app:cardCornerRadius="12dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📅 Session History"
-                    android:textColor="#60A5FA"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp"/>
-                <TextView
-                    android:id="@+id/tvTimeline"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#AACCFF"
-                    android:textSize="12sp"
-                    android:lineSpacingExtra="4dp"
-                    android:fontFamily="monospace"/>
+        <!--  2-Day Timeline  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="16dp" app:cardBackgroundColor="#0F1A2E" app:cardCornerRadius="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📅 Session History" android:textColor="#60A5FA" android:textSize="14sp" android:textStyle="bold" android:paddingBottom="8dp"/>
+                <TextView android:id="@+id/tvTimeline" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#AACCFF" android:textSize="12sp" android:lineSpacingExtra="4dp" android:fontFamily="monospace"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="← BACK TO DASHBOARD"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#1A1A2E"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
-
+        <Button android:id="@+id/btnBack" android:layout_width="match_parent" android:layout_height="56dp" android:text="← BACK TO DASHBOARD" android:textColor="#FFFFFF" android:backgroundTint="#1A1A2E" android:textStyle="bold" android:layout_marginBottom="24dp"/>
     </LinearLayout>
 </ScrollView>

@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="#0D0D1A">
+    <!--  Header  -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp" android:paddingTop="20dp">
+        <Button android:id="@+id/btnBack" android:layout_width="wrap_content" android:layout_height="36dp" android:text="← Back" android:textColor="#FFFFFF" android:backgroundTint="#2A2A3E" android:textSize="12sp"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="📈 Analytics Dashboard" android:textColor="#FFFFFF" android:textSize="18sp" android:textStyle="bold" android:gravity="center"/>
+        <Button android:id="@+id/btnRefresh" android:layout_width="wrap_content" android:layout_height="36dp" android:text="↺" android:textColor="#FFFFFF" android:backgroundTint="#7C3AED" android:textSize="16sp"/>
+    </LinearLayout>
+    <!--  Loading  -->
+    <TextView android:id="@+id/tvLoading" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Loading analytics..." android:textColor="#9E9EC8" android:textSize="14sp" android:gravity="center" android:padding="20dp"/>
+    <!--  Scrollable Content  -->
+    <ScrollView android:id="@+id/scrollContent" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:visibility="gone">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+            <!--  Summary Stats Grid  -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📊 30-Day Summary" android:textColor="#60A5FA" android:textSize="15sp" android:textStyle="bold" android:paddingBottom="10dp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="8dp">
+                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginEnd="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="10dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                        <TextView android:id="@+id/tvTotalSessions" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="— sessions" android:textColor="#00FF88" android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Sessions" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="10dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                        <TextView android:id="@+id/tvCompletedSessions" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="— completed" android:textColor="#A78BFA" android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Completed" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="8dp">
+                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginEnd="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="10dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                        <TextView android:id="@+id/tvAvgScore" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#00FF88" android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Avg Score" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="10dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                        <TextView android:id="@+id/tvAvgRisk" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#FF4444" android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Avg Risk" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="16dp">
+                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginEnd="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="10dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                        <TextView android:id="@+id/tvTotalViolations" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#FFAA00" android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Violations" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="10dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                        <TextView android:id="@+id/tvPeakHour" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#A78BFA" android:textSize="12sp" android:textStyle="bold" android:gravity="center"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Peak Risk Hour" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="20dp">
+                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginEnd="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="10dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                        <TextView android:id="@+id/tvTotalScreenTime" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#FACC15" android:textSize="12sp" android:textStyle="bold" android:gravity="center"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="30-Day Screen Time" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="10dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:gravity="center">
+                        <TextView android:id="@+id/tvDailyAvg" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textColor="#60A5FA" android:textSize="14sp" android:textStyle="bold"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Daily Average" android:textColor="#9E9EC8" android:textSize="11sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+            <!--  Screen Time Trend Chart  -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📅 Screen Time Trend (30 days)" android:textColor="#60A5FA" android:textSize="14sp" android:textStyle="bold" android:paddingBottom="8dp"/>
+            <com.github.mikephil.charting.charts.LineChart android:id="@+id/chartScreenTime" android:layout_width="match_parent" android:layout_height="220dp" android:layout_marginBottom="20dp"/>
+            <!--  Score Trend Chart  -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📊 Self-Control Score Trend" android:textColor="#60A5FA" android:textSize="14sp" android:textStyle="bold" android:paddingBottom="8dp"/>
+            <com.github.mikephil.charting.charts.LineChart android:id="@+id/chartScore" android:layout_width="match_parent" android:layout_height="220dp" android:layout_marginBottom="20dp"/>
+            <!--  Peak Hours Chart  -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⏰ Peak Distraction Hours" android:textColor="#60A5FA" android:textSize="14sp" android:textStyle="bold" android:paddingBottom="8dp"/>
+            <com.github.mikephil.charting.charts.BarChart android:id="@+id/chartPeakHours" android:layout_width="match_parent" android:layout_height="200dp" android:layout_marginBottom="32dp"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

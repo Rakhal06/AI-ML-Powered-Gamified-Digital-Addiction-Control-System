@@ -1,0 +1,34 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#0D0D1A" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <!--  Header  -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingTop="8dp" android:paddingBottom="16dp">
+            <Button android:id="@+id/btnBack" android:layout_width="wrap_content" android:layout_height="36dp" android:text="← Back" android:textColor="#FFFFFF" android:backgroundTint="#2A2A3E" android:textSize="12sp"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="🏆 Gamification" android:textColor="#FFFFFF" android:textSize="20sp" android:textStyle="bold" android:gravity="center"/>
+        </LinearLayout>
+        <!--  XP / Level Card  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="16dp" app:cardElevation="8dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp" android:gravity="center">
+                <TextView android:id="@+id/tvXpTotal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 XP" android:textColor="#FACC15" android:textSize="36sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvLevel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Level 1 — Beginner" android:textColor="#A78BFA" android:textSize="16sp" android:paddingTop="4dp" android:paddingBottom="12dp"/>
+                <ProgressBar android:id="@+id/progressXP" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="12dp" android:max="100" android:progress="0" android:progressTint="#7C3AED" android:progressBackgroundTint="#2A2A3E"/>
+                <TextView android:id="@+id/tvXpProgress" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 / 100 XP to Level 2" android:textColor="#9E9EC8" android:textSize="12sp" android:paddingTop="6dp"/>
+                <TextView android:id="@+id/tvStreak" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔥 0 day streak" android:textColor="#FF6B35" android:textSize="15sp" android:textStyle="bold" android:paddingTop="10dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <!--  Badges Card  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🎖️ Badges Earned" android:textColor="#60A5FA" android:textSize="15sp" android:textStyle="bold" android:paddingBottom="10dp"/>
+                <LinearLayout android:id="@+id/llBadges" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <!--  Missions Card  -->
+        <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="24dp" app:cardBackgroundColor="#1A1A2E" app:cardCornerRadius="12dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📋 Missions" android:textColor="#00FF88" android:textSize="15sp" android:textStyle="bold" android:paddingBottom="4dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Complete missions to earn bonus XP!" android:textColor="#9E9EC8" android:textSize="12sp" android:paddingBottom="8dp"/>
+                <LinearLayout android:id="@+id/llMissions" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>

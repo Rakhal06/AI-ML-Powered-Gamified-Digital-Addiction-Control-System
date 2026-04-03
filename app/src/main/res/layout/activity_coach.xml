@@ -1,144 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#0D0D1A">
-
-    <!-- Header -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#1A1A2E"
-        android:padding="16dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="🤖 AI Coach Chat"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:gravity="center"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Powered by your ML analysis data"
-            android:textColor="#9E9EC8"
-            android:textSize="12sp"
-            android:gravity="center"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="#0D0D1A">
+    <!--  Header  -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="#1A1A2E" android:padding="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🤖 AI Assistant" android:textColor="#FFFFFF" android:textSize="22sp" android:textStyle="bold" android:gravity="center"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Powered by your real ML analysis data" android:textColor="#9E9EC8" android:textSize="12sp" android:gravity="center"/>
     </LinearLayout>
-
-    <!-- Chat Area -->
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="12dp">
-
-        <TextView
-            android:id="@+id/tvChat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#CCCCCC"
-            android:textSize="14sp"
-            android:lineSpacingExtra="6dp"/>
+    <!--  Chat Area  -->
+    <ScrollView android:id="@+id/scrollView" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:padding="12dp" android:clipToPadding="false">
+        <TextView android:id="@+id/tvChat" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#CCCCCC" android:textSize="14sp" android:lineSpacingExtra="6dp" android:paddingBottom="16dp"/>
     </ScrollView>
-
-    <!-- Quick Reply Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#111122"
-        android:padding="8dp">
-
-        <Button
-            android:id="@+id/btnQ1"
-            android:layout_width="0dp"
-            android:layout_height="36dp"
-            android:layout_weight="1"
-            android:text="Risk?"
-            android:textSize="10sp"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#DC2626"
-            android:layout_marginEnd="4dp"/>
-
-        <Button
-            android:id="@+id/btnQ2"
-            android:layout_width="0dp"
-            android:layout_height="36dp"
-            android:layout_weight="1"
-            android:text="Tips"
-            android:textSize="10sp"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#059669"
-            android:layout_marginEnd="4dp"/>
-
-        <Button
-            android:id="@+id/btnQ3"
-            android:layout_width="0dp"
-            android:layout_height="36dp"
-            android:layout_weight="1"
-            android:text="Violations"
-            android:textSize="10sp"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#D97706"
-            android:layout_marginEnd="4dp"/>
-
-        <Button
-            android:id="@+id/btnQ4"
-            android:layout_width="0dp"
-            android:layout_height="36dp"
-            android:layout_weight="1"
-            android:text="My Type"
-            android:textSize="10sp"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#7C3AED"/>
+    <!--  Quick Reply Buttons  -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:background="#111122" android:paddingStart="8dp" android:paddingEnd="8dp" android:paddingTop="6dp" android:paddingBottom="6dp">
+        <Button android:id="@+id/btnQ1" android:layout_width="0dp" android:layout_height="38dp" android:layout_weight="1" android:text="Risk" android:textSize="11sp" android:textColor="#FFFFFF" android:backgroundTint="#DC2626" android:layout_marginEnd="4dp"/>
+        <Button android:id="@+id/btnQ2" android:layout_width="0dp" android:layout_height="38dp" android:layout_weight="1" android:text="Plan" android:textSize="11sp" android:textColor="#FFFFFF" android:backgroundTint="#059669" android:layout_marginEnd="4dp"/>
+        <Button android:id="@+id/btnQ3" android:layout_width="0dp" android:layout_height="38dp" android:layout_weight="1" android:text="Violations" android:textSize="11sp" android:textColor="#FFFFFF" android:backgroundTint="#D97706" android:layout_marginEnd="4dp"/>
+        <Button android:id="@+id/btnQ4" android:layout_width="0dp" android:layout_height="38dp" android:layout_weight="1" android:text="My Profile" android:textSize="11sp" android:textColor="#FFFFFF" android:backgroundTint="#7C3AED"/>
     </LinearLayout>
-
-    <!-- Input Area -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#1A1A2E"
-        android:padding="12dp">
-
-        <EditText
-            android:id="@+id/etMessage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Ask your AI coach..."
-            android:textColor="#FFFFFF"
-            android:textColorHint="#9E9EC8"
-            android:background="#0D0D1A"
-            android:padding="12dp"
-            android:inputType="text"
-            android:maxLines="2"
-            android:layout_marginEnd="8dp"/>
-
-        <Button
-            android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SEND"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#7C3AED"
-            android:textStyle="bold"/>
+    <!--  Input Area  -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:background="#1A1A2E" android:padding="10dp">
+        <EditText android:id="@+id/etMessage" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="Ask your AI Assistant..." android:textColor="#FFFFFF" android:textColorHint="#9E9EC8" android:background="#0D0D1A" android:padding="12dp" android:inputType="text" android:maxLines="3" android:layout_marginEnd="8dp" android:imeOptions="actionSend"/>
+        <Button android:id="@+id/btnSend" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SEND" android:textColor="#FFFFFF" android:backgroundTint="#7C3AED" android:textStyle="bold" android:paddingStart="16dp" android:paddingEnd="16dp"/>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:text="← BACK TO DASHBOARD"
-        android:textColor="#9E9EC8"
-        android:backgroundTint="#1A1A2E"
-        android:textStyle="bold"/>
-
+    <Button android:id="@+id/btnBack" android:layout_width="match_parent" android:layout_height="44dp" android:text="← BACK TO DASHBOARD" android:textColor="#9E9EC8" android:backgroundTint="#1A1A2E" android:textStyle="bold"/>
 </LinearLayout>

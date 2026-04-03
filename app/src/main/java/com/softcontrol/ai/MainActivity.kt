@@ -21,18 +21,13 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var onDeviceML: OnDeviceMLHelper
 
-    // Runtime permission launcher for POST_NOTIFICATIONS (Android 13+)
     private val notifPermLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) {
-            Toast.makeText(this, "Notifications enabled!", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this,
-                "Notifications blocked — violation alerts won't appear",
-                Toast.LENGTH_LONG).show()
-        }
+        if (!granted) Toast.makeText(this,
+            "Enable notifications for violation alerts", Toast.LENGTH_LONG).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,77 +35,59 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Create notification channels first
+        // TE-1: Initialize on-device ML
+        onDeviceML = OnDeviceMLHelper(this)
+
         NotificationHelper.createChannels(this)
-
-        // Request notification permission on Android 13+
         requestNotificationPermission()
-
-        // Start background tracking service
         TrackingService.start(this)
 
         val prefs = getSharedPreferences("softcontrol", Context.MODE_PRIVATE)
-        if (!prefs.contains("last_label")) {
-            SimulationHelper.preloadDefaultData(this)
-        }
+        if (!prefs.contains("last_label")) SimulationHelper.preloadDefaultData(this)
 
-        // Request usage stats permission if not granted
         if (!hasUsagePermission()) {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
             Toast.makeText(this, "Please grant Usage Access permission", Toast.LENGTH_LONG).show()
         }
 
-        // Main buttons
+        // Core navigation
         binding.btnAnalyze.setOnClickListener { analyzeNow() }
-        binding.btnFocus.setOnClickListener {
-            startActivity(Intent(this, FocusActivity::class.java))
-        }
-        binding.btnReport.setOnClickListener {
-            startActivity(Intent(this, ReportActivity::class.java))
-        }
-        binding.btnCoach.setOnClickListener {
-            startActivity(Intent(this, CoachActivity::class.java))
-        }
+        binding.btnFocus.setOnClickListener   { startActivity(Intent(this, FocusActivity::class.java)) }
+        binding.btnReport.setOnClickListener  { startActivity(Intent(this, ReportActivity::class.java)) }
+        binding.btnCoach.setOnClickListener   { startActivity(Intent(this, CoachActivity::class.java)) }
 
-        // Simulation buttons
+        // Feature 4 / 5 / 7 navigation
+        binding.btnGamification.setOnClickListener { startActivity(Intent(this, GamificationActivity::class.java)) }
+        binding.btnLeaderboard.setOnClickListener  { startActivity(Intent(this, LeaderboardActivity::class.java)) }
+        binding.btnAnalytics.setOnClickListener    { startActivity(Intent(this, AnalyticsDashboardActivity::class.java)) }
+
+        // Demo buttons
         binding.btnSimGood.setOnClickListener {
-            SimulationHelper.preloadGoodSession(this)
-            loadFromPrefs()
-            Toast.makeText(this, "✅ Good session loaded!", Toast.LENGTH_SHORT).show()
+            SimulationHelper.preloadGoodSession(this); loadFromPrefs()
+            Toast.makeText(this, "Good session loaded!", Toast.LENGTH_SHORT).show()
         }
         binding.btnSimDefault.setOnClickListener {
-            SimulationHelper.preloadDefaultData(this)
-            loadFromPrefs()
-            Toast.makeText(this, "😤 Default session loaded!", Toast.LENGTH_SHORT).show()
+            SimulationHelper.preloadDefaultData(this); loadFromPrefs()
+            Toast.makeText(this, "Default session loaded!", Toast.LENGTH_SHORT).show()
         }
         binding.btnSimBad.setOnClickListener {
-            SimulationHelper.preloadBadSession(this)
-            loadFromPrefs()
-            Toast.makeText(this, "💀 Bad session loaded!", Toast.LENGTH_SHORT).show()
+            SimulationHelper.preloadBadSession(this); loadFromPrefs()
+            Toast.makeText(this, "Bad session loaded!", Toast.LENGTH_SHORT).show()
         }
 
         analyzeNow()
     }
 
-    // ── Request POST_NOTIFICATIONS permission (Android 13+) ──
     private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    // Already granted — nothing to do
-                }
-                else -> {
-                    // Ask the user
-                    notifPermLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+                notifPermLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
-        // Below Android 13 — no runtime permission needed, notifications work automatically
     }
 
-    // ── Analyze: calls Flask backend ─────────────────────────
+    // ── Analyze: call Flask backend with full context ─────────
     private fun analyzeNow() {
         val hour       = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         val prefs      = getSharedPreferences("softcontrol", Context.MODE_PRIVATE)
@@ -118,19 +95,31 @@ class MainActivity : AppCompatActivity() {
 
         val timeSpent = if (hasUsagePermission())
             UsageStatsHelper.getTodayScreenTimeMinutes(this)
-        else
-            prefs.getFloat("time_spent", 30f)
+        else prefs.getFloat("time_spent", 30f)
 
         val appSwitches = if (hasUsagePermission())
             UsageStatsHelper.getAppSwitchCount(this)
-        else
-            prefs.getInt("app_switches", 5)
+        else prefs.getInt("app_switches", 5)
+
+        // Feature 1: Context-Aware Intelligence
+        val ctx     = ContextCollector.getContextSnapshot(this)
+        val userId  = UserProfileManager.getUserId(this)
+        val name    = UserProfileManager.getDisplayName(this)
+        val streak  = GamificationManager.getStreak(this)
 
         val request = AnalyzeRequest(
-            time_spent   = timeSpent,
-            app_switches = appSwitches,
-            hour_of_day  = hour,
-            violations   = violations
+            time_spent          = timeSpent,
+            app_switches        = appSwitches,
+            hour_of_day         = hour,
+            violations          = violations,
+            focus_completed     = false,
+            user_id             = userId,          // Feature 2: Personalized models
+            display_name        = name,
+            location_type       = ctx.locationType,
+            day_type            = ctx.dayType,
+            battery_level       = ctx.batteryLevel,
+            headphone_connected = ctx.headphoneConnected,
+            streak              = streak
         )
 
         lifecycleScope.launch {
@@ -140,22 +129,67 @@ class MainActivity : AppCompatActivity() {
                     response.body()?.let { data ->
                         updateUI(data)
                         saveToPrefs(data)
+
+                        // TE-3: RL action handling
+                        RLManager.handleRLAction(this@MainActivity, data.rl_action, data.rl_message, lifecycleScope)
+
+                        // Feature 4: XP award
+                        val award = GamificationManager.awardXP(
+                            this@MainActivity, data.xp_earned, false, violations
+                        )
+                        if (award.leveledUp) {
+                            Toast.makeText(this@MainActivity,
+                                "LEVEL UP! You are now Level ${award.newLevel}: ${GamificationManager.getLevelName(award.newLevel)}",
+                                Toast.LENGTH_LONG).show()
+                        }
+                        award.newBadges.forEach { badge ->
+                            Toast.makeText(this@MainActivity, "Badge earned: $badge", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                } else {
-                    loadFromPrefs()
-                }
+                } else { loadFromPrefsWithOnDeviceFallback(timeSpent, appSwitches, hour, violations, ctx) }
             } catch (e: Exception) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Cannot connect to server — showing cached data",
-                    Toast.LENGTH_LONG
-                ).show()
-                loadFromPrefs()
+                // TE-1: On-device ML fallback when server unreachable
+                loadFromPrefsWithOnDeviceFallback(timeSpent, appSwitches, hour, violations, ctx)
+                Toast.makeText(this@MainActivity,
+                    if (onDeviceML.isAvailable()) "Server offline — using on-device AI"
+                    else "Cannot connect to server — showing cached data",
+                    Toast.LENGTH_LONG).show()
             }
         }
     }
 
-    // ── Update UI from live API response ─────────────────────
+    /** TE-1: Try on-device ML first, then cached data. */
+    private fun loadFromPrefsWithOnDeviceFallback(
+        timeSpent: Float, appSwitches: Int, hour: Int, violations: Int,
+        ctx: ContextCollector.ContextSnapshot
+    ) {
+        if (onDeviceML.isAvailable()) {
+            val prefs       = getSharedPreferences("softcontrol", Context.MODE_PRIVATE)
+            val prevUsage   = prefs.getFloat("time_spent", timeSpent * 0.8f)
+            val features    = onDeviceML.buildFeatureArray(
+                timeSpent, appSwitches, hour, violations,
+                sessionGap       = 15f,
+                previousUsage    = prevUsage,
+                focusSessions    = 0,
+                dayOfWeek        = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1,
+                locationType     = ctx.locationType,
+                dayType          = ctx.dayType,
+                batteryLevel     = ctx.batteryLevel,
+                headphoneConnected = ctx.headphoneConnected
+            )
+            val result = onDeviceML.predict(features)
+            if (result != null) {
+                val (label, conf) = result
+                // Update UI partially with on-device result
+                binding.tvLabel.text = "${label.uppercase()} (On-Device)"
+                binding.tvLabel.setTextColor(labelColor(label))
+                binding.tvConfidence.text = "On-device confidence: ${(conf * 100).toInt()}%"
+            }
+        }
+        loadFromPrefs()
+    }
+
+    // ── Update UI from live API ─────────────────────────────────────────
     private fun updateUI(data: AnalyzeResponse) {
         val monsterEmoji = when (data.monster_level) {
             0 -> "😴"; 1 -> "😐"; 2 -> "😤"; 3 -> "😡"; 4 -> "👹"; 5 -> "💀"; else -> "😴"
@@ -165,9 +199,7 @@ class MainActivity : AppCompatActivity() {
 
         val displayLabel = if (data.label == data.ensemble_label)
             data.label.uppercase()
-        else
-            "${data.label.uppercase()} (Ensemble: ${data.ensemble_label.uppercase()})"
-
+        else "${data.label.uppercase()} (Ensemble: ${data.ensemble_label.uppercase()})"
         binding.tvLabel.text = displayLabel
         binding.tvLabel.setTextColor(labelColor(data.label))
         binding.tvConfidence.text = "Ensemble confidence: ${(data.confidence * 100).toInt()}%"
@@ -185,88 +217,121 @@ class MainActivity : AppCompatActivity() {
         if (data.is_binge_session) {
             binding.cardBinge.visibility = View.VISIBLE
             binding.tvBingeAlert.text =
-                "🚨 BINGE SESSION DETECTED — Anomaly score: ${data.anomaly_score}\n" +
+                "BINGE SESSION DETECTED — Anomaly score: ${data.anomaly_score}\n" +
                         "Isolation Forest flagged this session as abnormal usage."
         } else {
             binding.cardBinge.visibility = View.GONE
         }
 
-        binding.tvTopFactor.text  = "Top contributing factor: ${data.top_factor.replace('_',' ').uppercase()}"
+        binding.tvTopFactor.text   = "Top contributing factor: ${data.top_factor.replace('_',' ').uppercase()}"
         binding.tvShapDetails.text = buildShapText(data)
-        binding.tvInsight.text    = buildRichInsight(data)
-        binding.tvCoachTip.text   = data.coach_tip
+        binding.tvInsight.text     = buildRichInsight(data)
+        binding.tvCoachTip.text    = data.coach_tip
+
+        // Show LSTM trend
+        if (data.lstm_trend != "stable" && data.lstm_trend != "insufficient_data") {
+            val trendIcon = if (data.lstm_trend == "worsening") "📈 Trend: WORSENING" else "📉 Trend: IMPROVING"
+            binding.tvCoachTip.text = "${data.coach_tip}\n\n$trendIcon (LSTM prediction)"
+        }
     }
 
-    // ── Rich insight — replaces plain backend string ──────────
+    // ── Rich AI Insight ─────────────────────────────────────
     private fun buildRichInsight(data: AnalyzeResponse): String {
-        val riskPct  = (data.risk_score * 100).toInt()
-        val hour     = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        val prefs    = getSharedPreferences("softcontrol", Context.MODE_PRIVATE)
-        val timeSpent = prefs.getFloat("time_spent", 0f).toInt()
-        val switches  = prefs.getInt("app_switches", 0)
+        val prefs      = getSharedPreferences("softcontrol", Context.MODE_PRIVATE)
+        val riskPct    = (data.risk_score * 100).toInt()
+        val hour       = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        val timeSpent  = prefs.getFloat("time_spent", 0f).toInt()
+        val switches   = prefs.getInt("app_switches", 0)
         val violations = prefs.getInt("violations", 0)
+        val violApps   = prefs.getString("violation_apps", "") ?: ""
+        val lines      = mutableListOf<String>()
 
-        val lines = mutableListOf<String>()
-
-        // Behavior classification reason
+        // 1. Classification
         when (data.label) {
             "addicted" -> {
-                lines.add("🔴 You are classified as ADDICTED.")
-                if (timeSpent > 150) lines.add("You have spent ${timeSpent}min on your phone today — that is ${timeSpent/60}h ${timeSpent%60}min, well above the healthy limit of 2h.")
-                if (violations >= 3) lines.add("You broke focus 3 times — a strong signal of compulsive usage.")
+                lines.add("AI Classification: ADDICTED (${(data.confidence*100).toInt()}% confidence)")
+                lines.add("All ML models classified your session as Addicted. Your usage pattern closely matches addiction signatures.")
+                if (timeSpent > 150) lines.add("${timeSpent}min screen time = ${timeSpent/60}h ${timeSpent%60}m — ${timeSpent-120}min over the 2h healthy daily limit.")
+                if (violations >= 3) lines.add("3 violations reached the failure threshold — strong indicator of impulsive usage.")
+                else if (violations > 0) lines.add("$violations violation(s) recorded.")
             }
             "distracted" -> {
-                lines.add("🟡 You are classified as DISTRACTED.")
-                if (switches > 15) lines.add("You switched apps $switches times today — constant task-switching reduces productivity by up to 40%.")
-                if (violations > 0) lines.add("You logged $violations focus violation(s) — each one reinforces impulsive behavior.")
+                lines.add("AI Classification: DISTRACTED (${(data.confidence*100).toInt()}% confidence)")
+                lines.add("The ML models detected attention fragmentation. Not critical yet, but this pattern worsens over time.")
+                if (switches > 15) lines.add("$switches app switches today. Each context switch costs ~23 minutes of focus recovery.")
             }
-            "focused" -> {
-                lines.add("🟢 You are classified as FOCUSED — great discipline today!")
-                if (violations == 0) lines.add("Zero violations — you maintained strong self-control throughout.")
+            else -> {
+                lines.add("AI Classification: FOCUSED (${(data.confidence*100).toInt()}% confidence)")
+                lines.add("All ML models agree your behavior is healthy today.")
+                if (violations == 0) lines.add("Zero violations — you resisted every impulse.")
             }
         }
+        lines.add("")
 
-        // Relapse risk explanation
+        // 2. Relapse risk
         when {
-            riskPct >= 80 -> lines.add("⚠️ Relapse risk is CRITICAL ($riskPct%). Your pattern strongly matches past addictive behavior. Take a break NOW.")
-            riskPct >= 60 -> lines.add("⚠️ Relapse risk is HIGH ($riskPct%). You are on the edge — avoid opening social media for the next 2 hours.")
-            riskPct >= 40 -> lines.add("🟡 Relapse risk is MODERATE ($riskPct%). Stay mindful. Do not open distracting apps after 9 PM.")
-            else          -> lines.add("🟢 Relapse risk is LOW ($riskPct%). Keep up this pattern.")
+            riskPct >= 80 -> { lines.add("Relapse Risk: ${riskPct}% — CRITICAL"); lines.add("XGBoost predicts ${riskPct}% probability of relapsing. Action required now.") }
+            riskPct >= 60 -> { lines.add("Relapse Risk: ${riskPct}% — HIGH"); lines.add("Elevated risk. Avoid entertainment apps for the next 2 hours.") }
+            riskPct >= 40 -> { lines.add("Relapse Risk: ${riskPct}% — MODERATE"); lines.add("Manageable. Consider a focus session.") }
+            else -> { lines.add("Relapse Risk: ${riskPct}% — LOW"); lines.add("You're in a healthy zone.") }
+        }
+        lines.add("")
+
+        // 3. Time context
+        when {
+            hour in 22..23 || hour in 0..4 -> lines.add("LATE NIGHT (${hour}:00) — Highest-risk window. Willpower at its lowest.")
+            hour in 5..8   -> lines.add("EARLY MORNING (${hour}:00) — Try a 30-min phone-free morning routine.")
+            hour in 13..16 -> lines.add("AFTERNOON SLUMP (${hour}:00) — Energy dips, willpower weakens.")
+            else           -> lines.add("Usage at ${hour}:00 — Normal daytime hours.")
+        }
+        lines.add("")
+
+        // 4. Violations
+        if (violations > 0 && violApps.isNotEmpty() && violApps != "None") {
+            lines.add("Violation Details:")
+            violApps.split(" | ").forEachIndexed { idx, entry ->
+                val ord = when(idx+1){ 1->"1st"; 2->"2nd"; else->"${idx+1}th" }
+                lines.add("  $ord → $entry")
+            }
+            lines.add("")
         }
 
-        // Time of day insight
-        when {
-            hour in 22..23 || hour in 0..4 ->
-                lines.add("🌙 It is ${hour}:00 — late night usage is the #1 cause of next-day fatigue and increased addiction risk.")
-            hour in 5..8 ->
-                lines.add("🌅 Morning usage detected. Starting your day on your phone sets a distracted tone — try a 30-min phone-free morning.")
-            hour in 13..15 ->
-                lines.add("☀️ Afternoon slump detected. This is a common relapse window — stay mindful.")
-        }
-
-        // Cluster insight
+        // 5. Cluster insight
         when (data.cluster) {
-            "Night Owl"      -> lines.add("👤 Profile: Night Owl — your peak usage is after 10 PM. This pattern disrupts sleep and worsens addiction scores over time.")
-            "Binge User"     -> lines.add("👤 Profile: Binge User — you use your phone in long uninterrupted bursts. The AI flagged your session length as abnormal.")
-            "Impulsive User" -> lines.add("👤 Profile: Impulsive User — you pick up your phone frequently without clear intent. Your $switches app switches today confirm this.")
+            "Night Owl"      -> lines.add("Profile: Night Owl — 60% higher relapse risk than daytime users. Fix: hard curfew at 10 PM.")
+            "Binge User"     -> lines.add("Profile: Binge User — Long sessions flood the brain with dopamine. Fix: 30-min app timers.")
+            "Impulsive User" -> lines.add("Profile: Impulsive User — $switches app switches. Fix: phone fasting blocks of 1h.")
         }
+        lines.add("")
 
-        // Top SHAP factor
-        val topFactor = data.top_factor
-        lines.add("🔍 SHAP Analysis: The #1 reason for your classification is '${topFactor.replace('_',' ')}'. This factor had the highest impact on the AI's decision.")
-
-        // Binge
-        if (data.is_binge_session) {
-            lines.add("🚨 Isolation Forest flagged this as a BINGE session — your usage pattern is statistically abnormal compared to healthy users.")
+        // 6. SHAP
+        val shapExplain = when (data.top_factor) {
+            "time_spent"   -> "${timeSpent}min screen time pushed your classification the most."
+            "violations"   -> "$violations violation(s) had the highest model impact."
+            "app_switches" -> "$switches app switches had the strongest influence."
+            "hour_of_day"  -> "Usage at ${hour}:00 was the top factor."
+            else           -> "${data.top_factor.replace("_"," ")} had the strongest influence."
         }
+        lines.add("SHAP Top Factor = ${data.top_factor.replace("_"," ").uppercase()}")
+        lines.add(shapExplain)
+        lines.add("")
 
-        // Weekly forecast
-        lines.add("📅 At this rate, you will spend ${data.weekly_screen_time_hours}h on your phone this week.")
+        // 7. Used personal model
+        if (data.used_personal_model) lines.add("Using your personalized AI model (50+ sessions learned).")
 
-        return lines.joinToString("\n\n")
+        // 8. Score breakdown
+        lines.add("Score: ${data.self_control_score}/100 = 100 - (${violations}×10) - ${(timeSpent/5).toInt().coerceAtMost(30)}")
+
+        // 9. Weekly forecast
+        val excessH = (data.weekly_screen_time_hours - 14f).coerceAtLeast(0f)
+        lines.add("Weekly Forecast: ${data.weekly_screen_time_hours}h" +
+                if (excessH > 0) " (${String.format("%.1f",excessH)}h over the 14h/week healthy limit)"
+                else " — within healthy range")
+
+        return lines.joinToString("\n")
     }
 
-    // ── Load from SharedPrefs (offline fallback) ──────────────
+    // ── Load from cache ─────────────────────────────────────
     private fun loadFromPrefs() {
         val prefs     = getSharedPreferences("softcontrol", Context.MODE_PRIVATE)
         val label     = prefs.getString("last_label",  "focused") ?: "focused"
@@ -279,9 +344,7 @@ class MainActivity : AppCompatActivity() {
         val monster   = prefs.getInt("monster_level",   0)
         val topFactor = prefs.getString("top_factor",   "violations") ?: "violations"
 
-        val monsterEmoji = when (monster) {
-            0 -> "😴"; 1 -> "😐"; 2 -> "😤"; 3 -> "😡"; 4 -> "👹"; 5 -> "💀"; else -> "😴"
-        }
+        val monsterEmoji = when (monster) { 0->"😴"; 1->"😐"; 2->"😤"; 3->"😡"; 4->"👹"; 5->"💀"; else->"😴" }
         binding.tvMonster.text       = monsterEmoji
         binding.tvMonsterLabel.text  = "Addiction Monster — Level $monster/5"
         binding.tvLabel.text         = label.uppercase()
@@ -329,29 +392,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun labelColor(label: String) = when (label) {
-        "focused"    -> 0xFF00FF88.toInt()
-        "distracted" -> 0xFFFFAA00.toInt()
-        "addicted"   -> 0xFFFF4444.toInt()
-        else         -> 0xFFFFFFFF.toInt()
+        "focused"    -> 0xFF00FF88.toInt(); "distracted" -> 0xFFFFAA00.toInt()
+        "addicted"   -> 0xFFFF4444.toInt(); else         -> 0xFFFFFFFF.toInt()
     }
     private fun scoreColor(score: Int) = when {
-        score >= 70 -> 0xFF00FF88.toInt()
-        score >= 40 -> 0xFFFFAA00.toInt()
-        else        -> 0xFFFF4444.toInt()
+        score >= 70 -> 0xFF00FF88.toInt(); score >= 40 -> 0xFFFFAA00.toInt(); else -> 0xFFFF4444.toInt()
     }
     private fun riskColor(riskPct: Int) = when {
-        riskPct < 40 -> 0xFF00FF88.toInt()
-        riskPct < 70 -> 0xFFFFAA00.toInt()
-        else         -> 0xFFFF4444.toInt()
+        riskPct < 40 -> 0xFF00FF88.toInt(); riskPct < 70 -> 0xFFFFAA00.toInt(); else -> 0xFFFF4444.toInt()
     }
 
     private fun hasUsagePermission(): Boolean {
         val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode   = appOps.checkOpNoThrow(
-            AppOpsManager.OPSTR_GET_USAGE_STATS,
-            android.os.Process.myUid(),
-            packageName
-        )
+        val mode   = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+            android.os.Process.myUid(), packageName)
         return mode == AppOpsManager.MODE_ALLOWED
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        onDeviceML.close()
     }
 }

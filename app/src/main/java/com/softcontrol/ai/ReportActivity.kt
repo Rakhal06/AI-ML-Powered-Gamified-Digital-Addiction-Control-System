@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.softcontrol.ai.databinding.ActivityReportBinding
 import org.json.JSONArray
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,73 +16,29 @@ class ReportActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReportBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Save today's session to history before displaying
-        saveTodayToHistory()
         loadReport()
         binding.btnBack.setOnClickListener { finish() }
     }
 
-    // ── Save today's data to a rolling 7-day history ──────────
-    private fun saveTodayToHistory() {
-        val prefs      = getSharedPreferences("softcontrol", Context.MODE_PRIVATE)
-        val label      = prefs.getString("last_label",  "focused") ?: "focused"
-        val score      = prefs.getInt("last_score",      100)
-        val violations = prefs.getInt("violations",      0)
-        val timeSpent  = prefs.getFloat("time_spent",    0f)
-        val risk       = prefs.getFloat("last_risk",     0f)
-        val violationApps = prefs.getString("violation_apps", "") ?: ""
-
-        val historyJson = prefs.getString("session_history", "[]") ?: "[]"
-        val history     = JSONArray(historyJson)
-
-        val today = SimpleDateFormat("MMM dd", Locale.getDefault()).format(Date())
-
-        // Check if we already saved today
-        if (history.length() > 0) {
-            val last = history.getJSONObject(history.length() - 1)
-            if (last.getString("date") == today) return  // already saved
-        }
-
-        val entry = JSONObject().apply {
-            put("date",        today)
-            put("label",       label)
-            put("score",       score)
-            put("violations",  violations)
-            put("time_spent",  timeSpent.toInt())
-            put("risk",        (risk * 100).toInt())
-            put("apps",        violationApps)
-        }
-
-        history.put(entry)
-
-        // Keep only last 7 days
-        val trimmed = JSONArray()
-        val start   = maxOf(0, history.length() - 7)
-        for (i in start until history.length()) trimmed.put(history.get(i))
-
-        prefs.edit().putString("session_history", trimmed.toString()).apply()
-    }
-
     private fun loadReport() {
         val prefs      = getSharedPreferences("softcontrol", Context.MODE_PRIVATE)
-        val label      = prefs.getString("last_label",  "focused") ?: "focused"
+        val label      = prefs.getString("last_label",  "focused")   ?: "focused"
         val score      = prefs.getInt("last_score",      100)
         val risk       = prefs.getFloat("last_risk",     0f)
-        val insight    = prefs.getString("last_insight", "No analysis yet.") ?: ""
-        val tip        = prefs.getString("last_tip",     "Complete a session first.") ?: ""
-        val cluster    = prefs.getString("last_cluster", "—") ?: "—"
+        val insight    = prefs.getString("last_insight", "No analysis yet. Tap Analyze on the dashboard.") ?: ""
+        val tip        = prefs.getString("last_tip",     "Complete a focus session first.") ?: ""
+        val cluster    = prefs.getString("last_cluster", "—")         ?: "—"
         val weekly     = prefs.getFloat("weekly_hours",  0f)
         val violations = prefs.getInt("violations",      0)
         val monsterLvl = prefs.getInt("monster_level",   0)
         val timeSpent  = prefs.getFloat("time_spent",    0f)
-        val violationApps = prefs.getString("violation_apps", "") ?: ""
+        val violApps   = prefs.getString("violation_apps", "")        ?: ""
 
-        // ── Status ────────────────────────────────────────────
+        // ── Status ──────────────────────────────────────────
         binding.tvStatusLabel.text = label.uppercase()
         binding.tvStatusLabel.setTextColor(colorForLabel(label))
 
-        // ── Scores ────────────────────────────────────────────
+        // ── Scores ──────────────────────────────────────────
         binding.tvScoreValue.text = score.toString()
         binding.tvScoreValue.setTextColor(colorForScore(score))
 
@@ -91,108 +46,228 @@ class ReportActivity : AppCompatActivity() {
         binding.tvRiskValue.text = "$riskPct%"
         binding.tvRiskValue.setTextColor(colorForRisk(riskPct))
 
-        // ── Stats ─────────────────────────────────────────────
+        // ── Stats ────────────────────────────────────────────
         binding.tvClusterValue.text    = cluster
         binding.tvWeeklyValue.text     = "${weekly}h / week"
         binding.tvViolationsValue.text = "$violations violations"
         binding.tvMonsterValue.text    = "Level $monsterLvl / 5"
         binding.tvTimeValue.text       = "${timeSpent.toInt()} minutes"
 
-        // ── Violation Apps ────────────────────────────────────
-        if (violationApps.isNotEmpty()) {
-            binding.tvViolationApps.text = "Apps opened during violations:\n$violationApps"
-        } else {
-            binding.tvViolationApps.text = if (violations == 0)
-                "No violations — perfect focus! 🏆"
-            else
-                "Violations recorded (manual mode — app names not tracked)"
-        }
+        // ── Violation Details ────────────────────────────────
+        binding.tvViolationApps.text = buildViolationDetails(violations, violApps)
 
-        // ── Insight & Tip ─────────────────────────────────────
-        binding.tvInsightText.text = insight
-        binding.tvTipText.text     = tip
+        // ── AI Insight ───────────────────────────────────────
+        binding.tvInsightText.text = if (insight.isNotEmpty()) insight
+        else "No AI analysis yet. Go to the Dashboard and tap 'Analyze My Behavior'."
 
-        // ── Remarks ───────────────────────────────────────────
-        binding.tvGoodRemarks.text = buildGoodRemarks(label, violations, score)
-        binding.tvBadRemarks.text  = buildBadRemarks(label, violations, score, violationApps)
+        // ── Coach Tip ────────────────────────────────────────
+        binding.tvTipText.text = tip
 
-        // ── Timeline ──────────────────────────────────────────
+        // ── Remarks ──────────────────────────────────────────
+        binding.tvGoodRemarks.text = buildGoodRemarks(label, violations, score, timeSpent.toInt())
+        binding.tvBadRemarks.text  = buildBadRemarks(label, violations, score, violApps)
+
+        // ── Session History Timeline ─────────────────────────
         val historyJson = prefs.getString("session_history", "[]") ?: "[]"
         binding.tvTimeline.text = buildTimeline(historyJson)
     }
 
-    private fun buildTimeline(historyJson: String): String {
-        val history = JSONArray(historyJson)
-        if (history.length() == 0) return "No history yet. Complete more sessions!"
+    // ── Violation details block ──────────────────────────────
+    private fun buildViolationDetails(violations: Int, appsRaw: String): String {
+        if (violations == 0) return "🏆 Zero violations this session — perfect focus!"
 
         val sb = StringBuilder()
-        // Show newest first
-        for (i in history.length() - 1 downTo 0) {
-            val e          = history.getJSONObject(i)
-            val date       = e.getString("date")
-            val lbl        = e.getString("label")
-            val sc         = e.getInt("score")
-            val viol       = e.getInt("violations")
-            val time       = e.getInt("time_spent")
-            val riskPct    = e.getInt("risk")
-            val apps       = e.optString("apps", "")
+        sb.appendLine("Total violations: $violations / 3")
+        sb.appendLine()
 
-            val emoji = when (lbl) {
-                "focused"    -> "✅"
-                "distracted" -> "🟡"
-                "addicted"   -> "🔴"
-                else         -> "⚪"
+        if (appsRaw.isNotEmpty() && appsRaw != "None") {
+            val entries = appsRaw.split(" | ")
+            entries.forEachIndexed { idx, entry ->
+                val ordinal = when (idx + 1) { 1 -> "1st" ; 2 -> "2nd" ; else -> "${idx+1}th" }
+                sb.appendLine("  $ordinal violation → $entry")
             }
-
-            sb.append("$emoji $date — ${lbl.uppercase()}\n")
-            sb.append("   Score: $sc/100  |  Risk: $riskPct%  |  Time: ${time}min\n")
-
-            if (viol > 0) {
-                sb.append("   ⚠️ Violations: $viol")
-                if (apps.isNotEmpty()) sb.append(" → $apps")
-                sb.append("\n")
-            } else {
-                sb.append("   🏆 Zero violations\n")
+            sb.appendLine()
+            // Summarise which apps caused violations
+            val autoApps = entries.filter { !it.startsWith("Manual") }
+            if (autoApps.isNotEmpty()) {
+                sb.appendLine("Auto-detected apps:")
+                autoApps.forEach { sb.appendLine("  • ${it.substringBefore(" (")}") }
             }
-            sb.append("\n")
+        } else {
+            sb.appendLine("  Violations were logged manually (no auto-detection data).")
         }
+
         return sb.toString().trimEnd()
     }
 
-    private fun buildGoodRemarks(label: String, violations: Int, score: Int): String {
+    // ── Timeline builder ────────────────────────────────────
+    private fun buildTimeline(historyJson: String): String {
+        val history = JSONArray(historyJson)
+        if (history.length() == 0) {
+            return "No session history yet.\n\nComplete a focus session to start building your timeline!"
+        }
+
+        val sb = StringBuilder()
+
+        // Group by date
+        data class Session(
+            val date: String, val time: String, val hour: Int,
+            val timeSpent: Int, val violations: Int, val apps: String,
+            val focusDone: Boolean, val label: String, val score: Int,
+            val risk: Int, val monster: Int, val cluster: String
+        )
+
+        val sessions = mutableListOf<Session>()
+        for (i in 0 until history.length()) {
+            val e = history.getJSONObject(i)
+            sessions.add(Session(
+                date      = e.optString("date",      "Unknown"),
+                time      = e.optString("time",      ""),
+                hour      = e.optInt("hour",          0),
+                timeSpent = e.optInt("time_spent",    0),
+                violations= e.optInt("violations",    0),
+                apps      = e.optString("apps",       "None"),
+                focusDone = e.optBoolean("focus_done",false),
+                label     = e.optString("label",      "—"),
+                score     = e.optInt("score",          0),
+                risk      = e.optInt("risk",           0),
+                monster   = e.optInt("monster",        0),
+                cluster   = e.optString("cluster",    "—")
+            ))
+        }
+
+        // Show newest first, grouped by date
+        val grouped = sessions.reversed().groupBy { it.date }
+
+        grouped.forEach { (date, daySessions) ->
+            // Date header
+            val dayEmoji = getDayHealthEmoji(daySessions)
+            sb.appendLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            sb.appendLine("$dayEmoji  $date")
+            sb.appendLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            sb.appendLine()
+
+            daySessions.forEachIndexed { idx, s ->
+                val sessionNum = daySessions.size - idx
+                val statusIcon = when {
+                    s.focusDone  && s.violations == 0 -> "✅"
+                    s.focusDone  && s.violations > 0  -> "⚠️"
+                    !s.focusDone && s.violations >= 3  -> "❌"
+                    else -> "🔄"
+                }
+                val labelDisplay = when (s.label) {
+                    "focused"    -> "FOCUSED 🟢"
+                    "distracted" -> "DISTRACTED 🟡"
+                    "addicted"   -> "ADDICTED 🔴"
+                    "pending"    -> "Analyzing..."
+                    else -> s.label.uppercase()
+                }
+
+                sb.appendLine("  $statusIcon Session #$sessionNum  [${s.time}]")
+                sb.appendLine("     Duration : ${s.timeSpent} min")
+                sb.appendLine("     Result   : ${if (s.focusDone) "Completed ✅" else "Failed ❌"}")
+
+                if (s.label != "pending" && s.label != "—") {
+                    sb.appendLine("     AI Label : $labelDisplay")
+                    sb.appendLine("     Score    : ${s.score}/100")
+                    sb.appendLine("     Risk     : ${s.risk}%")
+                    sb.appendLine("     Profile  : ${s.cluster}")
+                    sb.appendLine("     Monster  : Level ${s.monster}/5")
+                }
+
+                // Violations detail
+                if (s.violations == 0) {
+                    sb.appendLine("     Violations: None 🏆")
+                } else {
+                    sb.appendLine("     Violations: ${s.violations}")
+                    if (s.apps.isNotEmpty() && s.apps != "None") {
+                        val appList = s.apps.split(" | ")
+                        appList.forEachIndexed { vIdx, app ->
+                            val ord = when (vIdx+1){ 1->"1st"; 2->"2nd"; else->"${vIdx+1}th" }
+                            sb.appendLine("       → $ord: $app")
+                        }
+                    }
+                }
+                sb.appendLine()
+            }
+
+            // Day summary
+            val totalTime      = daySessions.sumOf { it.timeSpent }
+            val totalViolations = daySessions.sumOf { it.violations }
+            val completed      = daySessions.count { it.focusDone }
+            val avgScore       = if (daySessions.any { it.score > 0 })
+                daySessions.filter { it.score > 0 }.map { it.score }.average().toInt() else 0
+
+            sb.appendLine("  📈 Day Summary")
+            sb.appendLine("     Sessions   : ${daySessions.size} (${completed} completed)")
+            sb.appendLine("     Total time : ${totalTime} min")
+            sb.appendLine("     Violations : $totalViolations")
+            if (avgScore > 0) sb.appendLine("     Avg Score  : $avgScore/100")
+            sb.appendLine()
+        }
+
+        return sb.toString().trimEnd()
+    }
+
+    private fun getDayHealthEmoji(sessions: List<*>): String {
+        // Simple heuristic based on session data
+        val list = sessions.filterIsInstance<Any>()
+        return when {
+            list.isEmpty() -> "📅"
+            else -> "📅"  // Could be extended with actual score analysis
+        }
+    }
+
+    // ── Remarks ─────────────────────────────────────────────
+    private fun buildGoodRemarks(label: String, violations: Int, score: Int, timeMin: Int): String {
         val items = mutableListOf<String>()
-        if (label == "focused") items.add("✅ Maintained focused behavior")
-        if (violations == 0)    items.add("✅ Zero violations — perfect session")
-        if (score >= 70)        items.add("✅ Strong self-control score")
-        if (score >= 90)        items.add("✅ Exceptional discipline today!")
-        return if (items.isEmpty()) "Complete a focus session to earn positive remarks." else items.joinToString("\n")
+        if (label == "focused")   items.add("✅ Maintained focused behavior throughout the session")
+        if (violations == 0)      items.add("✅ Zero violations — perfect self-control")
+        if (score >= 90)          items.add("✅ Exceptional self-control score (${score}/100)")
+        else if (score >= 70)     items.add("✅ Strong self-control score (${score}/100)")
+        if (timeMin >= 20)        items.add("✅ Completed a substantial focus session (${timeMin} min)")
+        if (items.isEmpty())      items.add("Complete a focus session to earn positive remarks.")
+        return items.joinToString("\n")
     }
 
     private fun buildBadRemarks(label: String, violations: Int, score: Int, apps: String): String {
         val items = mutableListOf<String>()
-        if (label == "addicted")    items.add("❌ Addictive usage pattern detected")
-        if (label == "distracted")  items.add("❌ High distraction detected")
-        if (violations >= 3)        items.add("❌ Session failed — $violations violations")
-        else if (violations == 2)   items.add("⚠️ Close call — 2 violations")
-        else if (violations == 1)   items.add("⚠️ 1 violation recorded")
-        if (score < 40)             items.add("❌ Low self-control score ($score/100)")
-        if (apps.isNotEmpty())      items.add("❌ Distraction apps: $apps")
+        if (label == "addicted")  items.add("❌ AI classified behavior as ADDICTED — urgent action needed")
+        if (label == "distracted") items.add("❌ AI classified behavior as DISTRACTED")
+        when {
+            violations >= 3 -> items.add("❌ Session failed — ${violations} violations reached the limit")
+            violations == 2 -> items.add("⚠️ Near-failure — 2 violations (1 away from failing)")
+            violations == 1 -> items.add("⚠️ 1 violation recorded this session")
+        }
+        if (score in 1..39)   items.add("❌ Self-control score critically low (${score}/100)")
+        else if (score in 40..59) items.add("⚠️ Self-control score below average (${score}/100)")
+
+        // Mention specific apps
+        if (apps.isNotEmpty() && apps != "None" && violations > 0) {
+            val autoApps = apps.split(" | ")
+                .filter { !it.startsWith("Manual") }
+                .map { it.substringBefore(" (") }
+                .distinct()
+            if (autoApps.isNotEmpty()) {
+                items.add("❌ Opened during focus: ${autoApps.joinToString(", ")}")
+            }
+        }
+
         return if (items.isEmpty()) "No negative remarks. Keep it up! 🌟" else items.joinToString("\n")
     }
 
+    // ── Color helpers ────────────────────────────────────────
     private fun colorForLabel(label: String) = when (label) {
         "focused"    -> 0xFF00FF88.toInt()
         "distracted" -> 0xFFFFAA00.toInt()
         "addicted"   -> 0xFFFF4444.toInt()
         else         -> 0xFFFFFFFF.toInt()
     }
-
     private fun colorForScore(score: Int) = when {
         score >= 70 -> 0xFF00FF88.toInt()
         score >= 40 -> 0xFFFFAA00.toInt()
         else        -> 0xFFFF4444.toInt()
     }
-
     private fun colorForRisk(riskPct: Int) = when {
         riskPct < 40 -> 0xFF00FF88.toInt()
         riskPct < 70 -> 0xFFFFAA00.toInt()
